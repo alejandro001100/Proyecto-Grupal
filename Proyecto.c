@@ -25,6 +25,16 @@ Limitaciones:
 1. El sistema debe ser desarrollado en el lenguaje de programación C.
 2. El sistema debe ser capaz de funcionar en un entorno de hardware y software limitado, como una computadora de escritorio de gama baja.
 3. El sistema debe ser fácil de usar para los empleados de la tienda, que pueden no tener una formación técnica avanzada.*/
+
+//Definición de constantes y variables globales:
+
+/* 
+ Se definen las constantes `MAX_PRODUCTOS` y `NOMBRE_ARCHIVO` que representan la capacidad máxima de almacenamiento del 
+ inventario y el archivo de texto donde se persisten los datos, respectivamente. Además, se definen arrays globales 
+ `nombres`, `cantidades` y `precios` que actúan como almacenamiento en memoria para el nombre, la cantidad y el precio de los 
+ productos en el inventario. La variable global `num_productos` mantiene un conteo en tiempo real del número de productos en el inventario.
+*/
+
 #include <stdio.h>
 #include <string.h>
 #include <errno.h>
@@ -37,6 +47,15 @@ int cantidades[MAX_PRODUCTOS];
 float precios[MAX_PRODUCTOS];
 int num_productos = 0;
 
+//Funciones de carga y guardado del inventario:
+
+/* 
+ `cargar_inventario()` es responsable de leer el archivo de inventario y llenar los arrays correspondientes con los datos. 
+ Utiliza `fscanf()` para leer las entradas del archivo. `guardar_inventario()`, por otro lado, escribe el estado actual del 
+ inventario en el archivo utilizando `fprintf()`. Este último se llama cada vez que se hace una modificación en el inventario, 
+ garantizando así la persistencia de los datos.
+*/
+
 void cargar_inventario() {
     FILE* archivo = fopen(NOMBRE_ARCHIVO, "r");
     if (archivo == NULL) {
@@ -48,6 +67,13 @@ void cargar_inventario() {
     }
     fclose(archivo);
 }
+
+//Funciones de pedido de información:
+
+/* 
+Las funciones `pedir_nombre()`, `pedir_cantidad()` y `pedir_precio()` son utilidades que interactúan con el usuario para obtener 
+información del producto. Utilizan `printf()` para solicitar los datos y `scanf()` para leer la entrada del usuario.
+*/
 
 void guardar_inventario() {
     FILE* archivo = fopen(NOMBRE_ARCHIVO, "w");
@@ -78,6 +104,14 @@ void pedir_precio(int indice) {
     } while (scanf("%f", &precios[indice]) != 1 || precios[indice] < 0);
 }
 
+//Funciones de gestión del inventario:
+
+/* 
+ `agregar_producto()`, `editar_producto_por_nombre()` y `eliminar_producto_por_nombre()` son las operaciones CRUD principales. 
+ `agregar_producto()` agrega un nuevo producto al final de los arrays de productos y aumenta el contador `num_productos`. 
+ `editar_producto_por_nombre()` busca un producto y permite al usuario modificar sus datos. `eliminar_producto_por_nombre()` 
+ busca un producto, lo elimina del inventario y reordena los arrays para mantener la continuidad.*/
+
 void agregar_producto() {
     if (num_productos >= MAX_PRODUCTOS) {
         printf("Error: El inventario esta lleno.\n");
@@ -92,6 +126,14 @@ void agregar_producto() {
     guardar_inventario();
     printf("Producto agregado con exito.\n");
 }
+
+//Función de búsqueda de productos:
+
+/* 
+`buscar_producto_por_nombre()` utiliza una búsqueda lineal simple para encontrar un producto en el inventario por su nombre. 
+La función devuelve el índice del producto en el array si se encuentra, y -1 si no se encuentra.
+*/
+
 
 int buscar_producto_por_nombre(const char* nombre) {
     for (int i = 0; i < num_productos; i++) {
@@ -142,17 +184,30 @@ void eliminar_producto_por_nombre() {
     printf("Producto eliminado con exito.\n");
 }
 
+//Función de listado de productos:
+
+/* 
+`listar_productos()` recorre los arrays de productos y utiliza `printf()` para mostrar en la consola la información de cada producto.
+*/
+
 void listar_productos() {
     for (int i = 0; i < num_productos; i++) {
         printf("Producto %d: %s, Cantidad: %d, Precio: %.2f\n", i, nombres[i], cantidades[i], precios[i]);
     }
 }
 
+//Función del menú principal:
+
+/* 
+`menu_principal()` es una función de control de flujo que presenta al usuario un menú de opciones y dirige la ejecución del programa a 
+la función correspondiente basándose en la entrada del usuario.
+*/
+
 void menu_principal() {
     int opcion;
     printf("\n--               PROYECTO_INTEGRADOR                --\n");
     printf("\n-Camila Torres, Alejandro Paqui y Katherinn Hernandez-\n");
-    printf("\n-- Sistema de Inventario para Tienda de Electronica --\n");
+    printf("\n-- Sistema de Inventario Electronica --\n");
     printf("\n-- Menu Principal --\n");
     printf("1. Agregar producto\n");
     printf("2. Editar producto por nombre\n");
@@ -185,6 +240,14 @@ void menu_principal() {
             printf("Error: Opcion invalida.\n");
     }
 }
+
+//Función main:
+
+/* 
+ La función `main()` inicia cargando los datos del archivo de inventario en la memoria y luego entra en un bucle infinito,
+  mostrando el menú principal y esperando la entrada del usuario hasta que se elige salir del programa.
+*/
+
 
 int main() {
     cargar_inventario();
