@@ -93,12 +93,25 @@ void agregar_producto() {
     printf("Producto agregado con exito.\n");
 }
 
-void editar_producto() {
-    int indice;
+int buscar_producto_por_nombre(const char* nombre) {
+    for (int i = 0; i < num_productos; i++) {
+        if (strcmp(nombres[i], nombre) == 0) {
+            return i;
+        }
+    }
+    return -1;
+}
 
-    do {
-        printf("Indice del producto a editar: ");
-    } while (scanf("%d", &indice) != 1 || indice < 0 || indice >= num_productos);
+void editar_producto_por_nombre() {
+    char nombre[50];
+    printf("Nombre del producto a editar: ");
+    scanf("%s", nombre);
+    int indice = buscar_producto_por_nombre(nombre);
+
+    if (indice == -1) {
+        printf("Producto no encontrado.\n");
+        return;
+    }
 
     pedir_nombre(indice);
     pedir_cantidad(indice);
@@ -108,11 +121,16 @@ void editar_producto() {
     printf("Producto editado con exito.\n");
 }
 
-void eliminar_producto() {
-    int indice;
-    do {
-        printf("Indice del producto a eliminar: ");
-    } while (scanf("%d", &indice) != 1 || indice < 0 || indice >= num_productos);
+void eliminar_producto_por_nombre() {
+    char nombre[50];
+    printf("Nombre del producto a eliminar: ");
+    scanf("%s", nombre);
+    int indice = buscar_producto_por_nombre(nombre);
+
+    if (indice == -1) {
+        printf("Producto no encontrado.\n");
+        return;
+    }
 
     for (int i = indice; i < num_productos - 1; i++) {
         strcpy(nombres[i], nombres[i + 1]);
@@ -137,8 +155,8 @@ void menu_principal() {
     printf("\n-- Sistema de Inventario para Tienda de Electronica --\n");
     printf("\n-- Menu Principal --\n");
     printf("1. Agregar producto\n");
-    printf("2. Editar producto\n");
-    printf("3. Eliminar producto\n");
+    printf("2. Editar producto por nombre\n");
+    printf("3. Eliminar producto por nombre\n");
     printf("4. Listar productos\n");
     printf("5. Salir\n");
     printf("Seleccione una opcion: ");
@@ -152,10 +170,10 @@ void menu_principal() {
             agregar_producto();
             break;
         case 2:
-            editar_producto();
+            editar_producto_por_nombre();
             break;
         case 3:
-            eliminar_producto();
+            eliminar_producto_por_nombre();
             break;
         case 4:
             listar_productos();
